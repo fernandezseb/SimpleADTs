@@ -69,4 +69,23 @@ public class PriorityQueueTest {
         queue.pop();
         assertEquals("world", queue.peek());
     }
+
+    @Test
+    public void popBubblesDown2() {
+        queue.push(20, "word");
+        queue.push(0, "test");
+        queue.push(3,"hello");
+        queue.push(2, "world");
+        queue.push(5, "dag");
+        queue.push(1, "wereld");
+        queue.push(10, "oom");
+
+        assertEquals("test", queue.pop());
+        assertEquals("wereld", queue.pop());
+        assertEquals("world", queue.pop());
+        assertEquals("hello", queue.pop());
+        assertEquals("dag", queue.pop());
+        assertEquals("oom", queue.pop());
+        assertEquals("word", queue.pop());
+    }
 }

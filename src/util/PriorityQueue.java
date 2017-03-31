@@ -3,10 +3,11 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 public class PriorityQueue<E extends Comparable<E>> {
 
-    class Item<E> {
+    class Item<E> implements Comparable<Item<E>> {
         private int priority;
         private E data;
 
@@ -24,6 +25,11 @@ public class PriorityQueue<E extends Comparable<E>> {
 
         public void setData(E data) {
             this.data = data;
+        }
+
+        @Override
+        public int compareTo(Item<E> o) {
+            return Integer.compare(getPriority(), o.getPriority());
         }
     }
 
@@ -46,7 +52,7 @@ public class PriorityQueue<E extends Comparable<E>> {
 
         E next = items.get(1).getData();
 
-        exchangeData(items.get(1), items.get(items.size()-1));
+        swapItems(items.get(1), items.get(items.size()-1));
         items.remove(items.size()-1);
         bubbleDown(1);
 
@@ -58,9 +64,11 @@ public class PriorityQueue<E extends Comparable<E>> {
         item.setData(value);
         item.setPriority(priority);
 
-        items.add(size(), item);
+        items.add(items.size(), item);
 
-        bubbleUp(size()-1);
+        bubbleUp(items.size()-1);
+
+        printState();
     }
 
     public boolean isEmpty() {
@@ -78,7 +86,6 @@ public class PriorityQueue<E extends Comparable<E>> {
     }
 
     private void bubbleUp(int index) {
-        int prio = items.get(index).getPriority();
 
         // current the first element
         Item<E> current = items.get(index);
@@ -86,23 +93,18 @@ public class PriorityQueue<E extends Comparable<E>> {
         int i = (int) Math.floor(index / 2);
 
         // Make sure we don't go into the 0 element or negative elements
-        while (i > 0) {
+        if (i >= 1) {
 
             // Compare the priority with the parent
-            if(prio < items.get(i).getPriority()) {
+            if(current.compareTo(items.get(i)) < 0) {
                 // Switch current value with the parent's
-                exchangeData(current, items.get(i));
+                swapItems(current, items.get(i));
+                bubbleUp(i);
             }
-
-            // Set the current to the parent
-            current = items.get(i);
-            // Set the new index of the supposed parent
-            i = (int) Math.floor(i / 2);
         }
     }
 
     private void bubbleDown(int current) {
-
 
             /*
              * Calculate the left and right indices
@@ -110,39 +112,43 @@ public class PriorityQueue<E extends Comparable<E>> {
             int leftIndex = current*2;
             int rightIndex = current*2 + 1;
 
-            /*
-             * Get the left and right child priorities, set to maximum value in case of an empty child,
-             * so that in won't try to switch later in the code
-             */
-            int leftprio = leftIndex  < items.size() ? items.get(leftIndex).getPriority() : Integer.MAX_VALUE;
-            int rightprio = rightIndex < items.size() ? items.get(rightIndex).getPriority() : Integer.MAX_VALUE;
-
-            // If the left child has higher priority, switch.
-            if(leftprio < items.get(current).getPriority()) {
-                exchangeData(items.get(current), items.get(leftIndex));
-            }
-
-            // If the right child has higher priority, switch.
-            if(rightprio < items.get(current).getPriority()) {
-                exchangeData(items.get(current), items.get(rightIndex));
-            }
-
             // If there is a left child, run recursive for the left child
             if(leftIndex < items.size()) {
+                // If the left child has higher priority, switch.
+                if(items.get(leftIndex).compareTo(items.get(current)) < 0) {
+                    swapItems(items.get(current), items.get(leftIndex));
+                }
                 bubbleDown(leftIndex);
             }
 
             // If there is a right child, run recursive for the right child
             if(rightIndex < items.size()) {
+                // If the right child has higher priority, switch.
+                if(items.get(rightIndex).compareTo(items.get(current)) < 0) {
+                    swapItems(items.get(current), items.get(rightIndex));
+                }
                 bubbleDown(rightIndex);
             }
 
     }
 
 
-    private void exchangeData(Item<E> l, Item<E> r) {
+    private void swapItems(Item<E> l, Item<E> r) {
+        System.out.println("Switching " + l.getData() + " with " + r.getData());
         E value = l.getData();
         l.setData(r.getData());
         r.setData(value);
+        
+        int prio = l.getPriority();
+        l.setPriority(r.getPriority());
+        r.setPriority(prio);
+    }
+
+    private void printState() {
+        IntStream.range(0, items.size()).forEach(i -> System.out.printf("%d ", i));
+        System.out.println();
+        IntStream.range(0, items.size()).forEach(i -> System.out.printf("%d ", items.get(i).getPriority()));
+        System.out.println();
+        System.out.println("------------------------------------------------------------------------");
     }
 }
