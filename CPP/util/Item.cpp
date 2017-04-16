@@ -26,10 +26,4 @@ void Item<E>::setData(E data)
     this->data = data;
 }
 
-template <class E>
-bool operator< (Item<E> const& l, Item<E> const& r)
-{
-    return l.getPriority() < r.getPriority();
-}
-
 template class Item<std::string>;
