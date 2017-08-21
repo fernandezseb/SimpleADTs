@@ -65,7 +65,26 @@ void PriorityQueue<E>::bubbleUp(int index)
 template <class E>
 void PriorityQueue<E>::bubbleDown(int current)
 {
-    
+    // Calculate the left and right indices
+    int leftIndex = current * 2;
+    int rightIndex = current * 2 + 1;
+
+    // If there is a left child, run recursive for the left child
+    if(leftIndex < items.size()) {
+        if(items[leftIndex]->getPriority() < items[current]->getPriority()) {
+            swapItems(items[current], items[leftIndex]);
+        }
+        bubbleDown(leftIndex);
+    }
+
+    // If there is a right child, run recursive for the right child
+    if(rightIndex < items.size()) {
+        if(items[rightIndex]->getPriority() < items[current]->getPriority()) {
+            swapItems(items[current], items[rightIndex]);
+        }
+        bubbleDown(rightIndex);
+    }
+
 }
 
 template <class E>
@@ -84,6 +103,17 @@ template <class E>
 E PriorityQueue<E>::peek()
 {
     return items[1]->getData();
+}
+
+template <class E>
+E PriorityQueue<E>::pop()
+{
+    E next = items[1]->getData();
+    swapItems(items[1], items[items.size()-1]);
+    items.pop_back();
+    bubbleDown(1);
+
+    return next;
 }
 
 
