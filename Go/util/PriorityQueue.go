@@ -5,6 +5,8 @@ import (
 	"math"
 )
 
+var QueueEmptyError = errors.New("Queue is empty")
+
 type item struct {
 	Priority int
 	Data     interface{}
@@ -32,7 +34,7 @@ func (q *PriorityQueue) IsEmpty() bool {
 
 func (q *PriorityQueue) Peek() (interface{}, error) {
 	if q.IsEmpty() {
-		return nil, errors.New("Queue is empty")
+		return nil, QueueEmptyError
 	}
 
 	return q.items[1].Data, nil
@@ -40,7 +42,7 @@ func (q *PriorityQueue) Peek() (interface{}, error) {
 
 func (q *PriorityQueue) Pop() (interface{}, error) {
 	if q.IsEmpty() {
-		return nil, errors.New("Queue is empty")
+		return nil, QueueEmptyError
 	}
 
 	next := q.items[1].Data
