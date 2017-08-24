@@ -93,13 +93,13 @@ func ExamplePopBubblesDown2() {
 func ExamplePopOnEmptyError() {
 	pq := New()
 	_, error := pq.Pop()
-	fmt.Println(error.Error())
-	// Output: Queue is empty
+	fmt.Println(error == QueueEmptyError)
+	// Output: true
 }
 
 func ExamplePeekOnEmptyError() {
 	pq := New()
 	_, error := pq.Peek()
-	fmt.Println(error.Error())
-	// Output: Queue is empty
+	fmt.Println(error == QueueEmptyError)
+	// Output: true
 }
